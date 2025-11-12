@@ -113,25 +113,20 @@ local function findCanPlantCFrame()
 		return nil
 	end
 	
-	local canPlant = plantLocations:FindFirstChild("Can_Plant")
-	if not canPlant then
-		warn("Can_Plant not found in Plant_Locations")
+	-- Get first child which is a Can_Plant
+	local firstCanPlant = plantLocations:GetChildren()[1]
+	if not firstCanPlant then
+		warn("No Can_Plant found in Plant_Locations")
 		return nil
 	end
 	
-	local firstChild = canPlant:GetChildren()[1]
-	if not firstChild then
-		warn("No children found in Can_Plant")
-		return nil
-	end
-	
-	-- Try to get CFrame from the part
-	if firstChild:IsA("BasePart") then
-		return firstChild.CFrame
-	elseif firstChild:IsA("Model") and firstChild.PrimaryPart then
-		return firstChild.PrimaryPart.CFrame
+	-- Try to get CFrame from the Can_Plant
+	if firstCanPlant:IsA("BasePart") then
+		return firstCanPlant.CFrame
+	elseif firstCanPlant:IsA("Model") and firstCanPlant.PrimaryPart then
+		return firstCanPlant.PrimaryPart.CFrame
 	else
-		warn("Cannot get CFrame from Can_Plant child")
+		warn("Cannot get CFrame from Can_Plant")
 		return nil
 	end
 end
