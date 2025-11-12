@@ -107,9 +107,15 @@ local function findCanPlantCFrame()
 		return nil
 	end
 	
-	local canPlant = important:FindFirstChild("Can_Plant")
+	local plantLocations = important:FindFirstChild("Plant_Locations")
+	if not plantLocations then
+		warn("Plant_Locations not found in Important")
+		return nil
+	end
+	
+	local canPlant = plantLocations:FindFirstChild("Can_Plant")
 	if not canPlant then
-		warn("Can_Plant not found in Important")
+		warn("Can_Plant not found in Plant_Locations")
 		return nil
 	end
 	
