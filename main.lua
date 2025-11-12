@@ -60,6 +60,8 @@ buttonCorner.Parent = toggleButton
 -- Variables
 local isEnabled = false
 local autoLoop = nil
+local playerFarm = nil
+local canPlantCFrame = nil
 
 -- Find player farm
 local function findPlayerFarm()
@@ -87,6 +89,59 @@ local function findPlayerFarm()
 	warn("Player farm not found")
 	return nil
 end
+
+-- Find Can_Plant CFrame
+local function findCanPlantCFrame()
+	if not playerFarm then
+		playerFarm = findPlayerFarm()
+	end
+	
+	if not playerFarm then
+		warn("Cannot find player farm for Can_Plant")
+		return nil
+	end
+	
+	local important = playerFarm:FindFirstChild("Important")
+	if not important then
+		warn("Important not found in player farm")
+		return nil
+	end
+	
+	local canPlant = important:FindFirstChild("Can_Plant")
+	if not canPlant then
+		warn("Can_Plant not found in Important")
+		return nil
+	end
+	
+	local firstChild = canPlant:GetChildren()[1]
+	if not firstChild then
+		warn("No children found in Can_Plant")
+		return nil
+	end
+	
+	-- Try to get CFrame from the part
+	if firstChild:IsA("BasePart") then
+		return firstChild.CFrame
+	elseif firstChild:IsA("Model") and firstChild.PrimaryPart then
+		return firstChild.PrimaryPart.CFrame
+	else
+		warn("Cannot get CFrame from Can_Plant child")
+		return nil
+	end
+end
+
+-- Initialize on script load
+task.spawn(function()
+	task.wait(0.1) -- Wait for game to load
+	playerFarm = findPlayerFarm()
+	canPlantCFrame = findCanPlantCFrame()
+	
+	if canPlantCFrame then
+		print("Can_Plant CFrame found:", canPlantCFrame)
+	else
+		warn("Failed to find Can_Plant CFrame on load")
+	end
+end)
 
 -- Find Grandmaster Sprinkler in backpack
 local function findGMSInBackpack()
@@ -129,8 +184,22 @@ local function autoGrandmasterPlace()
 	while isEnabled do
 		task.wait(0.5) -- Check every 0.5 seconds
 		
+		-- Re-find farm and CFrame if not found
+		if not playerFarm then
+			playerFarm = findPlayerFarm()
+		end
+		
+		if not canPlantCFrame then
+			canPlantCFrame = findCanPlantCFrame()
+		end
+		
+		if not canPlantCFrame then
+			warn("Cannot find Can_Plant CFrame, retrying...")
+			task.wait(5)
+			continue
+		end
+		
 		-- Find player farm
-		local playerFarm = findPlayerFarm()
 		if not playerFarm then
 			warn("Cannot find player farm")
 			task.wait(5)
@@ -178,13 +247,13 @@ local function autoGrandmasterPlace()
 			
 			-- Equip GMS
 			equipGMS(gms)
-			task.wait(0.1)
+			task.wait(0.5)
 			
 			-- Fire server remote
 			local success, err = pcall(function()
 				ReplicatedStorage:WaitForChild("GameEvents"):WaitForChild("SprinklerService"):FireServer(
 					"Create", 
-					CFrame.new(44.378517150878906, 0.1355266571044922, 85.27030944824219, 0.10431178659200668, -0.5122856497764587, 0.8524567484855652, -0, 0.8571326732635498, 0.5150957107543945, -0.9945446252822876, -0.0537305548787117, 0.08940904587507248)
+					canPlantCFrame
 				)
 			end)
 			
