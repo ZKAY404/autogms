@@ -318,10 +318,8 @@ local function autoGrandmasterPlace()
 			else
 				print("Lifetime is " .. highestLifetime .. " - Placing new Grandmaster Sprinkler")
 			end
-			if not diloBoostPaused then
-        		diloBoostPaused = true
-        		print("Pausing Dilo Boost - GMS needs placement")
-    		end
+        	diloBoostPaused = true
+        	print("Pausing Dilo Boost - GMS needs placement")
 			
 			-- Move all tools to backpack
 			moveToolsToBackpack()
@@ -346,11 +344,8 @@ local function autoGrandmasterPlace()
 			
 			task.wait(0.5) -- Wait before checking again
 		else
-    		-- GMS is good, resume Dilo Boost if it was paused
-    		if diloBoostPaused then
-        		diloBoostPaused = false
-        		print("Resuming Dilo Boost - GMS is good")
-    		end
+        	diloBoostPaused = false
+        	print("Resuming Dilo Boost - GMS is good")
 		end
 	end
 end
