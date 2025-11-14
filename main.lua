@@ -342,9 +342,9 @@ local function autoGrandmasterPlace()
 				warn("Failed to place Grandmaster Sprinkler:", err)
 			end
 
-			moveToolsToBackpack()
-			
 			task.wait(0.5) -- Wait before checking again
+			
+			moveToolsToBackpack()
 		else
         	diloBoostPaused = false
         	print("Resuming Dilo Boost - GMS is good")
