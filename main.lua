@@ -318,6 +318,10 @@ local function autoGrandmasterPlace()
 			else
 				print("Lifetime is " .. highestLifetime .. " - Placing new Grandmaster Sprinkler")
 			end
+			if not diloBoostPaused then
+        		diloBoostPaused = true
+        		print("Pausing Dilo Boost - GMS needs placement")
+    		end
 			
 			-- Move all tools to backpack
 			moveToolsToBackpack()
@@ -341,6 +345,12 @@ local function autoGrandmasterPlace()
 			end
 			
 			task.wait(0.5) -- Wait before checking again
+		else
+    		-- GMS is good, resume Dilo Boost if it was paused
+    		if diloBoostPaused then
+        		diloBoostPaused = false
+        		print("Resuming Dilo Boost - GMS is good")
+    		end
 		end
 	end
 end
@@ -448,6 +458,9 @@ toggleButton.MouseButton1Click:Connect(function()
 		toggleButton.Text = "OFF"
 		toggleButton.BackgroundColor3 = Color3.fromRGB(180, 50, 50)
 		print("Auto Grandmaster Place: DISABLED")
+		
+		-- Unpause Dilo Boost when Auto GMS is disabled
+		diloBoostPaused = false
 	end
 end)
 
