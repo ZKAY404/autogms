@@ -341,6 +341,8 @@ local function autoGrandmasterPlace()
 			else
 				warn("Failed to place Grandmaster Sprinkler:", err)
 			end
+
+			moveToolsToBackpack()
 			
 			task.wait(0.5) -- Wait before checking again
 		else
